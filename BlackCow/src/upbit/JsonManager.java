@@ -41,11 +41,11 @@ public class JsonManager
 		return jsonArray;
 	}
 	
-	public static void save(JSONArray array)
+	public static void save(JSONArray array, String name)
 	{
 		try
 		{
-			FileWriter file = new FileWriter("upbit.json");
+			FileWriter file = new FileWriter("./json/" + name + ".json");
 
 			file.write(array.toJSONString());
 			file.flush();
@@ -57,15 +57,14 @@ public class JsonManager
 		}
 	}
 	
-	public static JSONArray load()
+	public static JSONArray load(String name)
 	{
 		JSONParser jsonParser = new JSONParser();
 		JSONArray jsonArray = new JSONArray();
 		
 		try
 		{
-			
-			FileReader file = new FileReader("upbit.json");
+			FileReader file = new FileReader("./json/" + name + ".json");
 			
 			jsonArray = (JSONArray) jsonParser.parse(file);
 		}
@@ -77,31 +76,7 @@ public class JsonManager
 		return jsonArray;
 	}
 	
-//	public static Coin assign(JSONArray array)
-//	{
-//		JSONObject obj = (JSONObject) array.get(0);
-//		
-//		Coin coin = new Coin(
-//				(String) obj.get("code"), 
-//				(String) obj.get("candleDateTime"), 
-//				(String) obj.get("candleDateTimeKst"), 
-//				(double) obj.get("openingPrice"), 
-//				(double) obj.get("highPrice"), 
-//				(double) obj.get("lowPrice"), 
-//				(double) obj.get("tradePrice"), 
-//				(double) obj.get("candleAccTradeVolume"), 
-//				(double) obj.get("candleAccTradePrice"), 
-//				(long) obj.get("timestamp"), 
-//				(double) obj.get("prevClosingPrice"), 
-//				(String) obj.get("change"), 
-//				(double) obj.get("changePrice"), 
-//				(double) obj.get("changeRate"), 
-//				(double) obj.get("signedChangePrice"), 
-//				(double) obj.get("signedChangeRate"));
-//		
-//		return coin;
-//	}
-	
+	// 임시
 	public static CryptoCurrency assign(JSONArray jsonArray)
 	{
 		JSONObject jsonObject = (JSONObject) jsonArray.get(0);
@@ -122,5 +97,18 @@ public class JsonManager
 			System.out.println("ERROR JsonManager.getData(): " + jsonKey.toString());
 			return "error";
 		}	
+	}
+	
+	// 보완 하기
+	public static JSONObject getObject(JSONArray jsonArray)
+	{
+		return (JSONObject) jsonArray.get(0);
+	}
+	
+	public static JSONArray addJsonObject(JSONArray target, JSONArray input)
+	{
+		
+		
+		return target;
 	}
 }

@@ -4,35 +4,49 @@ public class Wallet
 {
 	private CoinSymbol coinSymbol;
 	private double balance;
+	private double averagePrice;
 	
 	public Wallet(CoinSymbol coinSymbol)
 	{
-		this(coinSymbol, 0);
+		this(coinSymbol, 0, 0);
 	}
 	
-	public Wallet(CoinSymbol coinSymbol, double balance)
+	public Wallet(CoinSymbol coinSymbol, double balance, double buyPrice)
 	{
-		this.setCoinSymbol(coinSymbol);
-		this.setBalance(balance);
+		setCoinSymbol(coinSymbol);
+		setBalance(balance);
+		setAveragePrice(balance, buyPrice);
 	}
 	
-	public void addBalance(double balance)
+	public boolean addBalance(double balance, double buyPrice)
 	{
-		this.balance += balance;
+		if (balance >= 0)
+		{
+			this.balance += balance;
+			return true;
+		}
+		else
+			System.out.println("Failed to addBalance: " + balance);
+		
+		return false;
 	}
 	
 	public boolean subtractBalance(double balance)
 	{
-		if (this.balance < balance)
+		if (balance >= 0 && this.balance >= balance)
 		{
-			System.out.println("Error occurred on subtractBalance: " + this.coinSymbol + " " + this.balance + " - " + balance);
-			
-			this.balance = 0;
-			return false;
+			this.balance -= balance;
+			return true;
 		}
+		else
+			System.out.println("Failed to subtractBalance: " + this.coinSymbol + " " + this.balance + " - " + balance);
 		
-		this.balance -= balance;
-		return true;
+		return false;
+	}
+	
+	public void setAveragePrice(double balance, double buyPrice)
+	{
+		this.averagePrice = (this.balance * this.averagePrice + balance * buyPrice) / (this.balance + balance);
 	}
 
 	
@@ -49,10 +63,21 @@ public class Wallet
 	{
 		return balance;
 	}
-	public void setBalance(double balance)
+	public boolean setBalance(double balance)
 	{
-		this.balance = balance;
+		if (balance >= 0)
+		{
+			this.balance = balance;
+			return true;
+		}
+		else
+			System.out.println("Failed to setBalance: " + balance);
+		
+		return false;
 	}
 	
-	
+	public double getAveragePrice()
+	{
+		return averagePrice;
+	}
 }

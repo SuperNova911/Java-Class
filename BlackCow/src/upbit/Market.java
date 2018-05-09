@@ -2,6 +2,6 @@ package upbit;
 
 public enum Market
 {
-	KRW, BTC, ETH, USDT
+	KRW, BTC, ETH, /*USDT*/
 }
 

@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 public class Request
 {
 	public enum TermType
@@ -28,13 +32,14 @@ public class Request
 		} 
 		catch (IOException e)
 		{
-			e.printStackTrace();
-			result = "request failed";
+			System.out.println("Failed to request: " + urlAddress);
+			result = "RQ_FAIL";
 		}
 		
 		return result;
 	}
 	 
+	// 이름 바꾸기
 	public static String createUpbitURL(
 			Market market, CoinSymbol coinSymbol, TermType termType, int dataAmount)
 	{
@@ -58,14 +63,14 @@ public class Request
 	{
 		String url = "https://crix-api-endpoint.upbit.com/v1/crix/candles/";
 		
-		url += termType.toString();
+		url += termType;
 		
 		if (termType == TermType.minutes)
 			url += "/" + Integer.toString(term);		
 		
 		url += "?code=CRIX.UPBIT."
-				+ market.toString() + "-"
-				+ coinSymbol.toString();
+				+ market + "-"
+				+ coinSymbol;
 		
 		if (dataAmount >= 1)
 			url += "&count=" + dataAmount;
@@ -74,5 +79,33 @@ public class Request
 			url += "&to=" + timeStamp;
 		
 		return url;
+	}
+	
+	
+	public static String KappaURL(Market market, CoinSymbol coinSymbol)
+	{
+		String url = "https://www.upbit.com/exchange?code=CRIX.UPBIT.";
+		
+		url += market + "-" + coinSymbol;
+		
+		return url;
+	}
+	
+	public static String Kappa(String url)
+	{
+		String data = "";
+		
+		try
+		{
+			Document doc = Jsoup.connect(url).get();
+			Elements elem = doc.select(".kline-para > ul:nth-child(2) > li:nth-child(1)");
+			data = elem.text();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return data;
 	}
 }
