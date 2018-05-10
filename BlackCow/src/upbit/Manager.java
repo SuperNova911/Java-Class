@@ -71,10 +71,16 @@ public class Manager
 //		String kappa = JsonManager.getData(JsonManager.getObject(JsonManager.load("KRW-BTC-minutes")), JsonKey.code);
 //		System.out.println(kappa);
 		
-		String url = "https://www.binance.com/trade.html?symbol=ETH_BTC"; //Request.KappaURL(Market.KRW, CoinSymbol.LTC);
-		String data = Request.Kappa(url);
+//		String url = "https://www.binance.com/trade.html?symbol=ETH_BTC"; //Request.KappaURL(Market.KRW, CoinSymbol.LTC);
+//		String data = Request.Kappa(url);
+//		
+//		System.out.println(data);
+//		
+
+		DynamicCrawler crawler = new DynamicCrawler();
+		OrderBook book = new OrderBook();
 		
-		System.out.println(data);
+		book = crawler.getOrderBook(Market.KRW, CoinSymbol.ETH);
 	}
 
 }
