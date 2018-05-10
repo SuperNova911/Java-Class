@@ -7,82 +7,31 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By.ByClassName;
 import org.openqa.selenium.By.ByXPath;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import upbit.OrderBook.OrderData;
 
 public class DynamicCrawler
 {
 	private WebDriver driver;
-	private boolean headless = false;
-	private String baseXPath = "//*[@id=\"root\"]/div/div/div[3]/section[1]/div/div[1]/article/span[2]/div/div/div[1]/table/tbody";
-
-	public enum OrderData
-	{
-		price, quantity, percentage
-	}
+	private Actions actions;
 	
-	public static void main(String[] args)
-	{
-		DynamicCrawler crawler = new DynamicCrawler();
-
-		crawler.test(crawler);
-
-
-		crawler.getDriver().close();
-		crawler.getDriver().quit();
-	}
+	private boolean headless = true;
+	private String baseXPath = "//*[@id=\"root\"]/div/div/div[3]/section[1]/div/div[1]/article/span[2]/div/div/div[1]/table/tbody";
+	
 	
 	public DynamicCrawler()
 	{
 		launchBrowser();
 	}
-	
-	public void test(DynamicCrawler crawler)
-	{
-		String url = crawler.createURL(Market.KRW, CoinSymbol.BTC);
-		crawler.moveTo(url);
-		
-		crawler.waitUntilLoad(30, "//*[@id=\"root\"]/div/div/div[3]/section[1]/div/div[1]/article/span[2]/div/div/div[1]/table/tbody/tr[18]/td[1]/a/div[1]/strong");
 
-		WebElement element = crawler.fappa();
-		
-		
-		for (int i = 1; i <= 20; i++)
-		{
-			String priceXPath = crawler.createXpath(i, OrderData.price, false);
-			String percentageXPath = crawler.createXpath(i, OrderData.percentage, false);
-			String quantityXPath = crawler.createXpath(i, OrderData.quantity, false);
-			
-			System.out.println(priceXPath);
-
-			String price = "";
-			String percentage = "";
-			String quantity = "";
-
-			try
-			{
-				price = crawler.findElementByXPath(element, priceXPath).getText();
-				percentage = crawler.findElementByXPath(element, percentageXPath).getText();
-				quantity = crawler.findElementByXPath(element, quantityXPath).getText();
-			}
-			catch (Exception e)
-			{
-				priceXPath = crawler.createXpath(i, OrderData.price, true);
-				percentageXPath = crawler.createXpath(i, OrderData.percentage, true);
-				quantityXPath = crawler.createXpath(i, OrderData.quantity, true);
-
-				price = crawler.findElementByXPath(element, priceXPath).getText();
-				percentage = crawler.findElementByXPath(element, percentageXPath).getText();
-				quantity = crawler.findElementByXPath(element, quantityXPath).getText();
-			}
-
-			System.out.println("Element " + i + ": \t" + price + "\t" + percentage + "\t" + quantity);
-		} 
-	}
-		
 	public boolean launchBrowser()
 	{
 		try
@@ -95,6 +44,7 @@ public class DynamicCrawler
 			options.addArguments("disable-gpu");
 			
 			driver = new ChromeDriver(options);
+			actions = new Actions(driver);
 			
 			return true;
 		}
@@ -103,6 +53,12 @@ public class DynamicCrawler
 			System.out.println("Failed to launchBrower");
 			return false;
 		}
+	}
+	
+	public void quitBrowser()
+	{
+		driver.close();
+		driver.quit();
 	}
 	
 	public String createURL(Market market, CoinSymbol coinSymbol)
@@ -151,63 +107,105 @@ public class DynamicCrawler
 		return xpath;
 	}
 	
-	public void moveTo(String url)
+	public boolean moveTo(String url)
 	{
-		driver.get(url);
+		try
+		{
+			driver.get(url);
+			System.out.println("Move to: " + url);
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.out.println("Failed to moveTo: " + url);
+			return false;
+		}
 	}
-	
-	public WebElement fappa()
-	{
-		return driver.findElement(ByXPath.xpath(baseXPath));
-	}
-//	
-//	public void kappa(Market market, CoinSymbol coinSymbol)
-//	{		
-//		String targetUrl = createURL(market, coinSymbol);
-//		
-//		if (targetUrl != driver.getCurrentUrl())
-//		{
-//			System.out.println("moveTo: " + targetUrl);
-//			moveTo(targetUrl);
-//		}
-//
-//		System.out.println("Wait for load elements");
-//		waitUntilLoad(30, createXpath(1)[0]);
-//		System.out.println("Elements load complete");
-//		
-//		String[] xpath = new String[2];
-//		
-//		for (int i = 1; i <= 20; i++)
-//		{
-//			xpath = createXpath(i);
-//
-//			System.out.println("data1: " + findElementByXPath(xpath[0]).getText());
-//			System.out.println("data2: " + findElementByXPath(xpath[1]).getText());
-//		}
-//	}
 	
 	public boolean waitUntilLoad(int sec, String xpath)
 	{
 		try
 		{
+			System.out.println("Wait for load elements");
 			new WebDriverWait(driver, sec).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
-			return true;
+			System.out.println("Load complete");
+			return true;	
 		}
 		catch (Exception e)
 		{
-			System.out.println("Failed to waitUntilLoad, xpath: " +xpath);
+			System.out.println("Failed to waitUntilLoad, xpath: " + xpath);
 			return false;
 		}
 	}
 	
+	public boolean scrollToElement(WebElement element)
+	{
+		try
+		{
+			actions.moveToElement(element).perform();
+			System.out.println("Scroll to element");
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.out.println("Failed to scrollToElement: " + element.getText());
+			return false;
+		}
+	}
+	
+	public OrderBook getOrderBook(Market market, CoinSymbol coinSymbol)
+	{
+		OrderBook orderBook = new OrderBook();
+		String url = createURL(market, coinSymbol);
+		String xpath = createXpath(20, OrderData.price, false); 
+				
+		moveTo(url);
+		waitUntilLoad(30, xpath);
+		scrollToElement(findElementByXPath(xpath));
+		
+		String price;
+		String quantity;
+		String percentage;
+		
+		for (int i = 1; i <= 20; i++)
+		{
+			try
+			{
+				price = findElementByXPath(createXpath(i, OrderData.price, false)).getText();
+				quantity = findElementByXPath(createXpath(i, OrderData.quantity, false)).getText();
+				percentage = findElementByXPath(createXpath(i, OrderData.percentage, false)).getText();
+			}
+			catch (Exception e)
+			{
+				price = findElementByXPath(createXpath(i, OrderData.price, true)).getText();
+				quantity = findElementByXPath(createXpath(i, OrderData.quantity, true)).getText();
+				percentage = findElementByXPath(createXpath(i, OrderData.percentage, true)).getText();
+			}
+			
+			orderBook.addOrder(price, quantity, percentage);
+		}
+		
+		return orderBook;
+	}
+	
 	public WebElement findElementByXPath(WebElement element, String xpath)
 	{
-		return element.findElement(ByXPath.xpath(xpath));
+		return element.findElement(By.xpath(xpath));
+	}
+	
+	public WebElement findElementByXPath(String xpath)
+	{
+		return driver.findElement(By.xpath(xpath));
 	}
 	
 	public WebDriver getDriver()
 	{
 		return driver;
+	}
+	
+	public Actions getActions()
+	{
+		return actions;
 	}
 	
 	public String getBaseXPath()
