@@ -23,7 +23,7 @@ public class DynamicCrawler
 	private WebDriver driver;
 	private Actions actions;
 	
-	private boolean headless = true;
+	private boolean headless = false;
 	private String baseXPath = "//*[@id=\"root\"]/div/div/div[3]/section[1]/div/div[1]/article/span[2]/div/div/div[1]/table/tbody";
 	
 	
