@@ -38,74 +38,90 @@ public class Request
 		
 		return result;
 	}
-	 
-	// 이름 바꾸기
-	public static String createUpbitURL(
-			Market market, CoinSymbol coinSymbol, TermType termType, int dataAmount)
+	
+	
+	static class Upbit
 	{
-		return createUpbitURL(market, coinSymbol, termType, 0, dataAmount, "now");
-	}
+		public static String createUrlByMin(
+				Market market, CoinSymbol coinSymbol, int term, int dataAmount)
+		{
+			return createUrl(market, coinSymbol, TermType.minutes, term, dataAmount);
+		}
+		
+		public static String createUrl(
+				Market market, CoinSymbol coinSymbol, TermType termType, int term, int dataAmount)
+		{
+			return createUrlWithTimestamp(market, coinSymbol, termType, term, dataAmount, "now");
+		}
+		
+		public static String createUrlWithTimestamp(
+				Market market, CoinSymbol coinSymbol, TermType termType, int term, int dataAmount, String timeStamp)
+		{
+			String url = "https://crix-api-endpoint.upbit.com/v1/crix/candles/";
+			
+			if (term < 1)
+				term = 1;
+			
+			if (dataAmount < 1)
+				dataAmount = 1;
+			
+			url += termType;
+			
+			if (termType == TermType.minutes)
+				url += "/" + Integer.toString(term);		
+			
+			url += "?code=CRIX.UPBIT."
+					+ market + "-"
+					+ coinSymbol;
+			
+			if (dataAmount >= 1)
+				url += "&count=" + dataAmount;
+			
+			if (!timeStamp.equals("now"))
+				url += "&to=" + timeStamp;
+			
+			return url;
+		}
 
-	public static String createUpbitURL(
-			Market market, CoinSymbol coinSymbol, TermType termType, int dataAmount, String timeStamp)
-	{
-		return createUpbitURL(market, coinSymbol, termType, 0, dataAmount, timeStamp);
-	}
-	
-	public static String createUpbitURL(
-			Market market, CoinSymbol coinSymbol, TermType termType, int term, int dataAmount)
-	{
-		return createUpbitURL(market, coinSymbol, termType, term, dataAmount, "now");
-	}
-	
-	public static String createUpbitURL(
-			Market market, CoinSymbol coinSymbol, TermType termType, int term, int dataAmount, String timeStamp)
-	{
-		String url = "https://crix-api-endpoint.upbit.com/v1/crix/candles/";
-		
-		url += termType;
-		
-		if (termType == TermType.minutes)
-			url += "/" + Integer.toString(term);		
-		
-		url += "?code=CRIX.UPBIT."
-				+ market + "-"
-				+ coinSymbol;
-		
-		if (dataAmount >= 1)
-			url += "&count=" + dataAmount;
-		
-		if (!timeStamp.equals("now"))
-			url += "&to=" + timeStamp;
-		
-		return url;
-	}
-	
-	
-	public static String KappaURL(Market market, CoinSymbol coinSymbol)
-	{
-		String url = "https://www.upbit.com/exchange?code=CRIX.UPBIT.";
-		
-		url += market + "-" + coinSymbol;
-		
-		return url;
-	}
-	
-	public static String Kappa(String url)
-	{
-		String data = "";
-		
-		try
-		{
-			Document doc = Jsoup.connect(url).get();
-			Elements elem = doc.select(".kline-para > ul:nth-child(2) > li:nth-child(1)");
-			data = elem.text();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return data;
+//		public static String createUpbitURL(
+//				Market market, CoinSymbol coinSymbol, TermType termType, int dataAmount)
+//		{
+//			return createUpbitURL(market, coinSymbol, termType, 1, dataAmount, "now");
+//		}
+//
+//		public static String createUpbitURL(
+//				Market market, CoinSymbol coinSymbol, TermType termType, int dataAmount, String timeStamp)
+//		{
+//			return createUpbitURL(market, coinSymbol, termType, 1, dataAmount, timeStamp);
+//		}
+//		
+//		public static String createUpbitURL(
+//				Market market, CoinSymbol coinSymbol, TermType termType, int term, int dataAmount)
+//		{
+//			return createUpbitURL(market, coinSymbol, termType, term, dataAmount, "now");
+//		}
+//		
+//		public static String createUpbitURL(
+//				Market market, CoinSymbol coinSymbol, TermType termType, int term, int dataAmount, String timeStamp)
+//		{
+//			String url = "https://crix-api-endpoint.upbit.com/v1/crix/candles/";
+//			
+//			url += termType;
+//			
+//			if (termType == TermType.minutes)
+//				url += "/" + Integer.toString(term);		
+//			
+//			url += "?code=CRIX.UPBIT."
+//					+ market + "-"
+//					+ coinSymbol;
+//			
+//			if (dataAmount >= 1)
+//				url += "&count=" + dataAmount;
+//			
+//			if (!timeStamp.equals("now"))
+//				url += "&to=" + timeStamp;
+//			
+//			return url;
+//		}
 	}
 }
