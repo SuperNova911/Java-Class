@@ -27,4 +27,10 @@ public class CryptoCurrency
 	{
 		return JsonManager.getData(this.jsonObject, jsonKey);
 	}
+	
+	// 테스트용 함수
+	public CoinSymbol getCoinSymbol()
+	{
+		return CoinSymbol.BTC;
+	}
 }
