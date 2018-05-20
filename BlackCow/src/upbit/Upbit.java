@@ -24,7 +24,7 @@ public class Upbit
 		{
 			for (CoinSymbol coinSymbol : CoinSymbol.values())
 			{
-				String url = Request.createUpbitURL(Market.KRW, coinSymbol, termType, 1);
+				String url = Request.Upbit.createUrl(Market.KRW, coinSymbol, termType, 1, 1);
 				String data = Request.request(url);
 				
 				if (data != "RQ_FAIL")
@@ -59,9 +59,9 @@ public class Upbit
 			for (CoinSymbol coinSymbol : CoinSymbol.values())
 			{
 				if (termType == TermType.minutes)
-					url = Request.createUpbitURL(market, coinSymbol, termType, term, dataAmount);
+					url = Request.Upbit.createUrlByMin(market, coinSymbol, term, dataAmount);
 				else
-					url = Request.createUpbitURL(market, coinSymbol, termType, dataAmount);
+					url = Request.Upbit.createUrl(market, coinSymbol, termType, term, dataAmount);
 				
 				data = Request.request(url);
 				

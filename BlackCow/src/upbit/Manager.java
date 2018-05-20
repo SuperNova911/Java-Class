@@ -81,6 +81,7 @@ public class Manager
 		OrderBook book = new OrderBook();
 		
 		book = crawler.getOrderBook(Market.KRW, CoinSymbol.ETH);
+		
 	}
 
 }
