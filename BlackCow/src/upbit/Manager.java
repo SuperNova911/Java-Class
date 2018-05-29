@@ -80,8 +80,9 @@ public class Manager
 		DynamicCrawler crawler = new DynamicCrawler();
 		OrderBook book = new OrderBook();
 		
-		book = crawler.getOrderBook(Market.KRW, CoinSymbol.ETH);
+//		book = crawler.getOrderBook(Market.KRW, CoinSymbol.ETH);
 		
+		crawler.test();
 	}
 
 }

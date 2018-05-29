@@ -5,6 +5,7 @@ import java.io.File;
 import org.jsoup.Connection.Base;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.By.ByClassName;
@@ -24,7 +25,7 @@ public class DynamicCrawler
 	private Actions actions;
 	
 	private boolean headless = false;
-	private String baseXPath = "//*[@id=\"root\"]/div/div/div[3]/section[1]/div/div[1]/article/span[2]/div/div/div[1]/table/tbody";
+	private String baseXPath = "//*[@id=\"root\"]/div/div/div[3]/div/section[1]/div/div[1]/article/span[2]/div/div/div[1]/table/tbody";
 	
 	
 	public DynamicCrawler()
@@ -157,8 +158,8 @@ public class DynamicCrawler
 	{
 		OrderBook orderBook = new OrderBook();
 		String url = createURL(market, coinSymbol);
-		String xpath = createXpath(20, OrderData.price, false); 
-				
+		String xpath = createXpath(20, OrderData.price, false);
+		
 		moveTo(url);
 		waitUntilLoad(30, xpath);
 		scrollToElement(findElementByXPath(xpath));
@@ -190,12 +191,30 @@ public class DynamicCrawler
 	
 	public WebElement findElementByXPath(WebElement element, String xpath)
 	{
-		return element.findElement(By.xpath(xpath));
+		try
+		{
+			return element.findElement(By.xpath(xpath));
+		} 
+		catch (NoSuchElementException e)
+		{
+			System.out.println("Failed to findElementByXPath, xpath: " + xpath);
+			
+			return null;
+		}
 	}
 	
 	public WebElement findElementByXPath(String xpath)
 	{
-		return driver.findElement(By.xpath(xpath));
+		try
+		{
+			return driver.findElement(By.xpath(xpath));
+		} 
+		catch (NoSuchElementException e)
+		{
+			System.out.println("Failed to findElementByXPath, xpath: " + xpath);
+			
+			return null;
+		}
 	}
 	
 	public WebDriver getDriver()
@@ -211,5 +230,20 @@ public class DynamicCrawler
 	public String getBaseXPath()
 	{
 		return baseXPath;
+	}
+	
+	
+	public void test()
+	{
+		String xpath = "//*[@id=\"PM_ID_ct\"]/div[1]/div[1]/div/div[2]/a[1]";
+		moveTo("https://www.naver.com/");
+		new WebDriverWait(driver, 15).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+		
+		WebElement kappa;
+		
+		kappa = findElementByXPath(xpath);
+
+		System.out.println(kappa.getAttribute("id"));
+		System.out.println(kappa.getText());
 	}
 }
