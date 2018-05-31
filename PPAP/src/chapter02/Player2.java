@@ -1,11 +1,11 @@
-package gg2;
+package chapter02;
 
-public class Player
+public class Player2
 {
 	private int id;
 	private int number = 0;
 	
-	public Player(int n)
+	public Player2(int n)
 	{
 		id = n;
 	}

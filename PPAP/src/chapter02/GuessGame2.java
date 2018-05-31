@@ -1,12 +1,12 @@
-package gg2;
+package chapter02;
 
-public class GuessGame
+public class GuessGame2
 {
 	public void startGame()
 	{
-		Player p1 = new Player(1);
-		Player p2 = new Player(2);
-		Player p3 = new Player(3);
+		Player2 p1 = new Player2(1);
+		Player2 p2 = new Player2(2);
+		Player2 p3 = new Player2(3);
 		
 		int targetNumber = (int)(Math.random() * 10);
 		System.out.println("0이상 9이하의 숫자를 맞춰보세요.");
@@ -35,7 +35,7 @@ public class GuessGame
 		}
 	}
 	
-	private boolean isRight(Player p, int answer)
+	private boolean isRight(Player2 p, int answer)
 	{
 		if (p.getNumber() == answer)
 		{

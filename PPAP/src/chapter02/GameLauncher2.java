@@ -1,12 +1,12 @@
-package gg2;
+package chapter02;
 
-public class GameLauncher
+public class GameLauncher2
 {
 
 	public static void main(String[] args)
 	{
 		// TODO Auto-generated method stub
-		GuessGame game = new GuessGame();
+		GuessGame2 game = new GuessGame2();
 		game.startGame();
 	}
 
